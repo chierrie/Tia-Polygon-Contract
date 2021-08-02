@@ -34,6 +34,8 @@ contract Pool is Ownable, ReentrancyGuard, Initializable, IPool {
 
     mapping(address => uint256) public last_redeemed;
 
+    mapping(address => uint256) public last_redeemed_time;
+
     // Constants for various precisions
     uint256 private constant PRICE_PRECISION = 1e6;
     uint256 private constant COLLATERAL_RATIO_PRECISION = 1e6;
@@ -42,8 +44,23 @@ contract Pool is Ownable, ReentrancyGuard, Initializable, IPool {
     // Number of decimals needed to get to 18
     uint256 private missing_decimals;
 
+    // Unit of token redeemed within 24 hours from "daily_redemption_start"
+    uint256 private daily_redemption_count;
+
+    // the timestamp the 24 hours count started
+    uint256 private daily_redemption_start;
+
     // Number of blocks to wait before being able to collectRedemption()
     uint256 public redemption_delay = 1;
+
+    // the unit of token needed to be redeemed within 24 hours
+    uint256 public daily_redemption_limit;
+
+    // Maximum amount of token address can redeem in "redemption_locktime"
+    uint256 public user_redemption_limit;
+
+    // Duration of timelock per address
+    uint256 public redemption_locktime = 1 hours;
 
     // AccessControl state variables
     bool public mint_paused = false;
@@ -69,6 +86,7 @@ contract Pool is Ownable, ReentrancyGuard, Initializable, IPool {
         collateral = _collateral;
         treasury = _treasury;
         missing_decimals = 18 - ERC20(_collateral).decimals();
+        daily_redemption_start = block.timestamp;
     }
 
     /* ========== VIEWS ========== */
@@ -143,6 +161,15 @@ contract Pool is Ownable, ReentrancyGuard, Initializable, IPool {
         uint256 _collateral_out_min
     ) external {
         require(redeem_paused == false, "Redeeming is paused");
+        require((block.timestamp - last_redeemed_time[msg.sender]) > user_redemption_limit, "<user_redemption_limit");
+
+        if((block.timestamp - daily_redemption_start) > 24 hours){
+            daily_redemption_count = 0;
+            daily_redemption_start = block.timestamp;
+        }
+
+        require(daily_redemption_count < daily_redemption_limit, ">daily_redemption_limit");
+
         (, uint256 _share_price, , , uint256 _ecr, , , uint256 _redemption_fee) = ITreasury(treasury).info();
         uint256 _collateral_price = getCollateralPrice();
         require(_collateral_price > 0, "Invalid collateral price");
@@ -177,6 +204,9 @@ contract Pool is Ownable, ReentrancyGuard, Initializable, IPool {
         }
 
         last_redeemed[msg.sender] = block.number;
+        last_redeemed_time[msg.sender] = block.timestamp;
+
+        daily_redemption_count = daily_redemption_count + _dollar_amount;
 
         // Move all external functions to the end
         IDollar(dollar).poolBurnFrom(msg.sender, _dollar_amount);
@@ -215,6 +245,12 @@ contract Pool is Ownable, ReentrancyGuard, Initializable, IPool {
         if (_send_collateral) {
             _requestTransferCollateral(msg.sender, _collateral_amount);
         }
+    }
+
+    function resetDailyLimit() external {
+        require((block.timestamp - daily_redemption_start) > 24 hours, "< 24 hours");
+        daily_redemption_count = 0;
+        daily_redemption_start = block.timestamp;
     }
 
     /* ========== INTERNAL FUNCTIONS ========== */
@@ -256,6 +292,18 @@ contract Pool is Ownable, ReentrancyGuard, Initializable, IPool {
 
     function setRedemptionDelay(uint256 _redemption_delay) external onlyOwner {
         redemption_delay = _redemption_delay;
+    }
+
+    function setUserRedemptionLimit(uint256 _user_redemption_limit) external onlyOwner {
+        user_redemption_limit = _user_redemption_limit;
+    }
+
+    function setRedemptionTimeLock(uint256 _redemption_locktime) external onlyOwner {
+        redemption_locktime = _redemption_locktime;
+    }
+
+    function setDailyRedemptionLimit(uint256 _daily_redemption_limit) external onlyOwner {
+        daily_redemption_limit = _daily_redemption_limit;
     }
 
     function setTreasury(address _treasury) external onlyOwner {
