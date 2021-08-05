@@ -42,7 +42,7 @@ contract CollateralRatioPolicy is Ownable, ICollateralRatioPolicy, Initializable
     /* ========== CONSTRUCTOR ========== */
 
     constructor() {
-        ratio_step = 2500; // = 0.25% at 6 decimals of precision
+        ratio_step = 4200; // = 0.42% at 6 decimals of precision
         target_collateral_ratio = 1000000;
         effective_collateral_ratio = 1000000;
         refresh_cooldown = 3600; // Refresh cooldown period is set to 1 hour (3600 seconds) at genesis

@@ -68,8 +68,8 @@ const run: DeployFunction = async (hre) => {
     'Dollar',
     {from: creator, log: true},
     'initialize',
-    'IRON Stablecoin',
-    'IRON',
+    'Inertia Stablecoin',
+    'TIA',
     treasury.address
   );
 
@@ -82,8 +82,8 @@ const run: DeployFunction = async (hre) => {
     'Share',
     {from: creator, log: true},
     'initialize',
-    'IRON Protocol Share',
-    'STEEL',
+    'Velocity',
+    'VCTY',
     treasury.address,
     treasuryFund.address,
     creator,

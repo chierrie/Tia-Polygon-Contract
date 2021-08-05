@@ -25,7 +25,7 @@ contract Share is ERC20Custom, Ownable, Initializable {
     // DISTRIBUTION
     uint256 public constant COMMUNITY_REWARD_ALLOCATION = 700_000_000 ether; // 700M
     uint256 public constant TREASURY_FUND_ALLOCATION = 300_000_000 ether; // 300M
-    uint256 public constant TREASURY_FUND_VESTING_DURATION = 1095 days; // 36 months
+    uint256 public constant TREASURY_FUND_VESTING_DURATION = 365 days; // 12 months
     uint256 public startTime; // Start time of vesting duration
     uint256 public endTime; // End of vesting duration
     address public treasuryFund;

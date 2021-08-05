@@ -56,7 +56,7 @@ const run: DeployFunction = async (hre) => {
     args: [],
     log: true,
   });
-  await execute('Dollar', {from: creator, log: true}, 'initialize', 'IRON Stablecoin', 'IRON', treasury.address);
+  await execute('Dollar', {from: creator, log: true}, 'initialize', 'Inertia Stablecoin', 'TIA', treasury.address);
 
   const share = await deploy('Share', {
     from: creator,
@@ -67,8 +67,8 @@ const run: DeployFunction = async (hre) => {
     'Share',
     {from: creator, log: true},
     'initialize',
-    'IRON Protocol Share',
-    'STEEL',
+    'Velocity',
+    'VCTY',
     treasury.address,
     treasuryFund.address,
     creator,
