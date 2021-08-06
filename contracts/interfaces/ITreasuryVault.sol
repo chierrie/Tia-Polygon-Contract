@@ -8,4 +8,8 @@ interface ITreasuryVault {
     function deposit(uint256 _amount) external;
 
     function withdraw() external;
+
+    function claimIncetiveRewards() external;
+
+    // function transferOwnership(address _newOwner) external;
 }

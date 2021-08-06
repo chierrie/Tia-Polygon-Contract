@@ -78,7 +78,7 @@ contract TreasuryVaultAave is ITreasuryVault, Ownable, Initializable, Reentrancy
         emit Profited(profit);
     }
 
-    function claimIncetiveRewards() external onlyOwner {
+    function claimIncetiveRewards() external override onlyOwner {
         uint256 unclaimedRewards = getUnclaimedIncentiveRewardsBalance();
         address[] memory _tokens = new address[](1);
         _tokens[0] = address(aToken);
