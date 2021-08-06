@@ -1,5 +1,5 @@
 {
-  "name": "iron-polygon-contracts",
+  "name": "inertia-polygon-contracts",
   "devDependencies": {
     "@chainlink/contracts": "^0.1.7",
     "@nomiclabs/hardhat-ethers": "^2.0.2",
