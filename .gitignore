@@ -3,6 +3,7 @@ node_modules
 #Hardhat files
 cache
 artifacts
+flattens
 
 .env
 deployments/localhost
