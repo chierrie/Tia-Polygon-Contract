@@ -4,7 +4,7 @@
  *Submitted for verification at BscScan.com on 2020-09-10
  */
 
-pragma solidity 0.8.4;
+pragma solidity 0.8.6;
 
 /// @title Multicall - Aggregate results from multiple read-only function calls
 /// @author Michael Elliot <mike@makerdao.com>

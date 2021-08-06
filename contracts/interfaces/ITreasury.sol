@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.4;
+pragma solidity 0.8.6;
 
 interface ITreasury {
     function hasPool(address _address) external view returns (bool);
