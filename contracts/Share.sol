@@ -95,6 +95,11 @@ contract Share is ERC20Custom, Ownable, Initializable {
         communityRewardController = _communityRewardController;
     }
 
+    function setVestingStartTime(uint256 _startTime) external onlyOwner {
+        startTime = _startTime;
+        endTime = _startTime + TREASURY_FUND_VESTING_DURATION;
+    }
+
     // This function is what other Pools will call to mint new SHARE
     function poolMint(address m_address, uint256 m_amount) external onlyPools {
         super._mint(m_address, m_amount);
